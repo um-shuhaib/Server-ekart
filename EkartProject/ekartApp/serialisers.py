@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from ekartApp.models import Product,Category,Cart
+from django.contrib.auth.models import User
 
 
 class ProductSerialiser(serializers.ModelSerializer):
@@ -15,3 +16,10 @@ class CartSerialiser(serializers.ModelSerializer):
     class Meta:
         model=Cart
         fields="__all__"
+
+class UserSerialiser(serializers.ModelSerializer):
+    id=serializers.IntegerField(read_only=True)
+    class Meta:
+        model=User
+        fields=["id","username","password"]
+

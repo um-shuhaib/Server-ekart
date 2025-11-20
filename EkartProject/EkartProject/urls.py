@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from ekartApp import views
+from rest_framework.authtoken import views as tokenview
 
 router = DefaultRouter()
 router.register("product",views.ProductView,basename="product_view")
+router.register("user",views.UserView,basename="user_view")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("token",tokenview.obtain_auth_token),
 ]+router.urls
