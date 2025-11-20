@@ -25,3 +25,14 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.product_instance.product_name
+    
+class Order(models.Model):
+    cart_instance=models.ForeignKey(Cart,on_delete=models.CASCADE)
+    user_instance=models.ForeignKey(User,on_delete=models.CASCADE)
+    address=models.TextField()
+    status=models.CharField(max_length=20,default="order-placed")
+
+    def __str__(self):
+        return f"{self.user_instance.username}+{self.cart_instance.product_instance.product_name}"
+    
+    

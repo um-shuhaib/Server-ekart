@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from ekartApp.models import Category,Product,Cart
+from ekartApp.models import Category,Product,Cart,Order
 from rest_framework.response import Response
-from ekartApp.serialisers import ProductSerialiser,CartSerialiser,UserSerialiser
+from ekartApp.serialisers import ProductSerialiser,CartSerialiser,UserSerialiser,OrderSerialiser
 from rest_framework.decorators import action
 from rest_framework import permissions,authentication
 from django.contrib.auth.models import User
@@ -49,3 +49,21 @@ class UserView(ModelViewSet):
         serialiser=CartSerialiser(cart,many=True)
         return Response(data=serialiser.data)
     
+class CartView(ModelViewSet):
+    queryset=Cart.objects.all()
+    serializer_class=CartSerialiser
+
+    @action(methods=["POST"],detail=True,authentication_classes=[authentication.TokenAuthentication],permission_classes=[permissions.IsAuthenticated])
+    def place_order(self,request,*args,**kwargs):
+        cart=Cart.objects.get(id=kwargs.get("pk"))
+        user=request.user
+        serialiser=OrderSerialiser(data=request.data)
+        if serialiser.is_valid():
+            Order.objects.create(**serialiser.validated_data,user_instance=user,cart_instance=cart)
+            cart.status="order-places"
+            cart.save()
+            return Response({"msg":"order places"})
+        else:
+            return Response(data=serialiser.errors)
+
+

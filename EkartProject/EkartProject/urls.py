@@ -23,6 +23,7 @@ from rest_framework.authtoken import views as tokenview
 router = DefaultRouter()
 router.register("product",views.ProductView,basename="product_view")
 router.register("user",views.UserView,basename="user_view")
+router.register("cart",views.CartView,basename="cart_view")
 
 
 urlpatterns = [
