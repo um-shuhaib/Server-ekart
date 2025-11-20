@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator,MaxValueValidator
+
 # Create your models here.
 class Category(models.Model):
     category=models.CharField(max_length=20,unique=True)
@@ -35,4 +37,15 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.user_instance.username}+{self.cart_instance.product_instance.product_name}"
     
-    
+
+class Review(models.Model):
+    user_instance=models.ForeignKey(User,on_delete=models.CASCADE)
+    product_instance=models.ForeignKey(Product,on_delete=models.CASCADE)
+    comment=models.TextField()
+    rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)]) # import validator le minvaluevalidator and maxvaluevalidator
+
+    class Meta:
+        unique_together=("user_instance","product_instance")
+
+    def __str__(self):
+        return f"{self.product_instance.product_name}+{self.comment}"

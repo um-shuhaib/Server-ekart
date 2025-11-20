@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from ekartApp.models import Category,Product,Cart,Order
+from ekartApp.models import Category,Product,Cart,Order,Review
 from rest_framework.response import Response
-from ekartApp.serialisers import ProductSerialiser,CartSerialiser,UserSerialiser,OrderSerialiser
+from ekartApp.serialisers import ProductSerialiser,CartSerialiser,UserSerialiser,OrderSerialiser,ReviewSerialiser
 from rest_framework.decorators import action
 from rest_framework import permissions,authentication
 from django.contrib.auth.models import User
@@ -22,6 +22,18 @@ class ProductView(ModelViewSet):
         if serialisation.is_valid():
             Cart.objects.create(**serialisation.validated_data,user_instance=user,product_instance=product)
             return Response({"msg":"product added to cart"})
+        
+    @action(methods=["POST"],detail=True,authentication_classes=[authentication.TokenAuthentication],permission_classes=[permissions.IsAuthenticated])  
+    def add_review(self,request,*args,**kwargs):
+        product=Product.objects.get(id=kwargs.get("pk"))
+        user=request.user
+        serialiser=ReviewSerialiser(data=request.data)
+        if serialiser.is_valid():
+            Review.objects.create(**serialiser.validated_data,user_instance=user,product_instance=product)
+            return Response(data=serialiser.data)
+        else:
+            return Response(data=serialiser.errors)
+
 
 
 # class CartView(ModelViewSet):
