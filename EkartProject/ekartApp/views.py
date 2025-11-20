@@ -25,14 +25,19 @@ class ProductView(ModelViewSet):
         
     @action(methods=["POST"],detail=True,authentication_classes=[authentication.TokenAuthentication],permission_classes=[permissions.IsAuthenticated])  
     def add_review(self,request,*args,**kwargs):
-        product=Product.objects.get(id=kwargs.get("pk"))
-        user=request.user
-        serialiser=ReviewSerialiser(data=request.data)
-        if serialiser.is_valid():
-            Review.objects.create(**serialiser.validated_data,user_instance=user,product_instance=product)
-            return Response(data=serialiser.data)
-        else:
-            return Response(data=serialiser.errors)
+        try:
+            product=Product.objects.get(id=kwargs.get("pk"))
+            user=request.user
+            serialiser=ReviewSerialiser(data=request.data)
+            if serialiser.is_valid():
+                try:
+                    Review.objects.create(**serialiser.validated_data,user_instance=user,product_instance=product) # we can also use getorcreate (then we dont need the unique group in model )
+                    return Response(data=serialiser.data)
+                except:
+                    return Response({"msg":"comment already added"})
+        except:
+            return Response({"msg":"matching qoury does not exist"})
+       
 
 
 
