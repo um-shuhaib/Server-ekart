@@ -9,13 +9,7 @@ class ProductSerialiser(serializers.ModelSerializer):
         model=Product
         fields="__all__"
 
-class CartSerialiser(serializers.ModelSerializer):
-    id=serializers.IntegerField(read_only=True)
-    product_instance=serializers.CharField(read_only=True)
-    user_instance=serializers.CharField(read_only=True)
-    class Meta:
-        model=Cart
-        fields="__all__"
+
 
 class UserSerialiser(serializers.ModelSerializer):
     id=serializers.IntegerField(read_only=True)
@@ -23,3 +17,10 @@ class UserSerialiser(serializers.ModelSerializer):
         model=User
         fields=["id","username","password"]
 
+class CartSerialiser(serializers.ModelSerializer):
+    id=serializers.IntegerField(read_only=True)
+    product_instance=ProductSerialiser(read_only=True)
+    user_instance=UserSerialiser(read_only=True)
+    class Meta:
+        model=Cart
+        fields="__all__"
