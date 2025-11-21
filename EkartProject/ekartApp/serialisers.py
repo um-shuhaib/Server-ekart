@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class ProductSerialiser(serializers.ModelSerializer):
     id=serializers.IntegerField(read_only=True)
+    total_rating=serializers.FloatField(read_only=True)
     class Meta:
         model=Product
         fields="__all__"

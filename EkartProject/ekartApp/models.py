@@ -19,6 +19,12 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+    def total_rating(self):
+        # review_list = Review.objects.filter(product_instance=self)
+        review_list= self.review_set.filter(product_instance=self)      # modelname_set
+        rating_list = [review.rating for review in review_list]
+        return sum(rating_list)/len(rating_list)
+    
 class Cart(models.Model):
     product_instance = models.ForeignKey(Product,on_delete=models.CASCADE)
     user_instance = models.ForeignKey(User,on_delete=models.CASCADE)
