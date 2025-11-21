@@ -37,6 +37,13 @@ class ProductView(ModelViewSet):
                     return Response({"msg":"comment already added"})
         except:
             return Response({"msg":"matching qoury does not exist"})
+
+    @action(methods=["GET"],detail=True)  
+    def review_list(self,request,*args,**kwargs):
+        product=Product.objects.get(id=kwargs.get("pk"))
+        reviews=Review.objects.filter(product_instance=product)
+        serialiser=ReviewSerialiser(reviews,many=True)
+        return Response(data=serialiser.data)
        
 
 
